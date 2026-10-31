@@ -28,6 +28,8 @@ else:
         'http://127.0.0.1:3000',
         'https://*.onrender.com',
         'https://*.vercel.app',
+        'https://*.ngrok-free.dev',
+        'https://*.ngrok-free.app',
     ]
 
 # -----------------------------------------------------------------------------
@@ -201,6 +203,8 @@ else:
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r'^https://.*\.vercel\.app$',
     r'^https://.*\.onrender\.com$',
+    r'^https://.*\.ngrok-free\.dev$',
+    r'^https://.*\.ngrok-free\.app$',
 ]
 CORS_ALLOW_CREDENTIALS = True
 

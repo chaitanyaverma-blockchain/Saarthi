@@ -13,6 +13,11 @@ class ApiService {
     let url = `${BASE_URL}${endpoint}`;
     const headers = { ...options.headers };
 
+    // Skip ngrok interstitial warning if using an ngrok tunnel
+    if (url.includes('ngrok-free') || url.includes('ngrok.io') || url.includes('ngrok.dev')) {
+      headers['ngrok-skip-browser-warning'] = 'true';
+    }
+
     // If body is FormData, delete Content-Type so browser sets multipart boundary automatically
     if (typeof FormData !== 'undefined' && options.body instanceof FormData) {
       delete headers['Content-Type'];
