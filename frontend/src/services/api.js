@@ -75,9 +75,9 @@ class ApiService {
 
       return data;
     } catch (error) {
-      if (error.name === 'TypeError' && (error.message.includes('fetch') || error.message.includes('NetworkError'))) {
+      if (error.name === 'TypeError' && (error.message.includes('fetch') || error.message.includes('NetworkError') || error.message.includes('Failed to fetch'))) {
         const helpfulError = new Error(
-          'Cannot connect to the backend server. Please verify that the Django backend server is running at http://127.0.0.1:8000'
+          `Cannot connect to the backend server (${BASE_URL}). Please verify that the backend server is reachable.`
         );
         helpfulError.isNetworkError = true;
         helpfulError.originalError = error;

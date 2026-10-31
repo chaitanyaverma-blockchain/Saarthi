@@ -208,6 +208,11 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'ngrok-skip-browser-warning',
+]
+
 # -----------------------------------------------------------------------------
 # Production Security (HTTPS / Cookies / HSTS)
 # Active automatically whenever DJANGO_DEBUG=False
