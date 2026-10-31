@@ -169,6 +169,64 @@ Saarthi/
 
 ---
 
+## Production Deployment Guide
+
+SAARTHI is architected for clean separation of concerns:
+- **Backend & Database:** Python Django on **Render** with Managed PostgreSQL.
+- **Frontend SPA:** React 18 + Vite on **Vercel** with CDN edge caching and client-side rewrites.
+
+### 1. Deploy Django Backend & PostgreSQL on Render
+
+#### Option A: Render Blueprint (Recommended - 1 Click)
+1. Log in to [Render](https://dashboard.render.com/).
+2. Click **New +** &rarr; **Blueprint**.
+3. Connect your GitHub repository `https://github.com/chaitanyaverma-blockchain/Saarthi.git`.
+4. Render will read `render.yaml` and configure:
+   - A free managed **PostgreSQL** database (`saarthi-postgres`).
+   - A Python **Web Service** (`saarthi-backend`) with root directory `backend`, build command `./build.sh`, and start command `gunicorn saarthi_backend.wsgi:application`.
+5. Enter your `GEMINI_API_KEY` when prompted in the environment variables screen.
+6. Click **Apply**. Render will automatically run database migrations and collect static files with WhiteNoise.
+7. Note your live backend URL (e.g. `https://saarthi-backend.onrender.com`).
+
+#### Option B: Manual Web Service & Database on Render
+1. Create a **PostgreSQL Database** on Render (Plan: Free) and copy the **Internal Database URL**.
+2. Create a **Web Service**:
+   - **Root Directory:** `backend`
+   - **Environment:** `Python 3`
+   - **Build Command:** `./build.sh`
+   - **Start Command:** `gunicorn saarthi_backend.wsgi:application`
+3. Add Environment Variables:
+   - `DJANGO_SECRET_KEY`: *(Generate a secure random string or let Render generate it)*
+   - `DJANGO_DEBUG`: `False`
+   - `DATABASE_URL`: *(Your Render PostgreSQL connection string)*
+   - `GEMINI_API_KEY`: *(Your Google AI Studio API key)*
+   - `GEMINI_MODEL`: `gemini-3.5-flash-lite`
+   - `CORS_ALLOWED_ORIGINS`: `https://your-frontend.vercel.app`
+   - `CSRF_TRUSTED_ORIGINS`: `https://your-frontend.vercel.app,https://*.onrender.com`
+
+8. **Create a Production Django Superuser:**
+   In your Render Web Service dashboard &rarr; **Shell** tab:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+---
+
+### 2. Deploy Frontend on Vercel
+
+1. Log in to [Vercel](https://vercel.com/) and click **Add New...** &rarr; **Project**.
+2. Import your GitHub repository `https://github.com/chaitanyaverma-blockchain/Saarthi.git`.
+3. In **Project Configuration**:
+   - **Framework Preset:** Vite
+   - **Root Directory:** Click *Edit* and select `frontend`.
+4. In **Environment Variables**:
+   - **Key:** `VITE_API_URL`
+   - **Value:** `https://your-saarthi-backend.onrender.com/api` *(Your Render backend URL with `/api`)*
+5. Click **Deploy**.
+6. Once deployed, copy your live Vercel domain (e.g. `https://saarthi-student.vercel.app`) and ensure it is included in your Render backend's `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS`.
+
+---
+
 ## API Endpoints Overview
 
 | Module | Method | Endpoint | Description |
@@ -203,3 +261,4 @@ Saarthi/
 ## License
 
 This project is developed for educational purposes under the MIT License.
+

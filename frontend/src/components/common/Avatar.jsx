@@ -25,7 +25,9 @@ export default function Avatar({ name, src, size = 'md', className }) {
       return imageSrc;
     }
     const cleanPath = imageSrc.startsWith('/') ? imageSrc : `/${imageSrc}`;
-    return `http://127.0.0.1:8000${cleanPath}`;
+    const rawApi = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+    const hostOrigin = rawApi.replace(/\/api\/?$/, '').replace(/\/+$/, '');
+    return `${hostOrigin}${cleanPath}`;
   };
 
   const resolvedSrc = getFullSrc(src);

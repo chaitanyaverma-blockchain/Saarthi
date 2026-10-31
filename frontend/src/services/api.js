@@ -4,7 +4,9 @@
  */
 
 const DEFAULT_BASE_URL = 'http://127.0.0.1:8000/api';
-const BASE_URL = import.meta.env.VITE_API_URL || DEFAULT_BASE_URL;
+const rawUrl = import.meta.env.VITE_API_URL || DEFAULT_BASE_URL;
+const cleanUrl = rawUrl.replace(/\/+$/, '');
+const BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
 class ApiService {
   async request(endpoint, options = {}) {
